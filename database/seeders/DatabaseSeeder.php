@@ -15,25 +15,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $usuarios = \App\Models\User::factory(6)->create();
+        $this->call(RolePermissionSeeder::class);
+
+        $usuarios = \App\Models\User::factory(4)->create();
+
+        $todos = \App\Models\User::all();
 
         $labels = \App\Models\Label::factory(5)->create();
 
         \App\Models\Project::factory(4)
-            ->recycle($usuarios)
+            ->recycle($todos)
             ->create()
-            ->each(function ($project) use ($usuarios, $labels) {
+            ->each(function ($project) use ($todos, $labels) {
                 $project->members()->attach(
-                    $usuarios->random(3)->pluck('id'),
+                    $todos->random(3)->pluck('id'),
                     ['project_role' => 'colaborador']
                 );
 
                 \App\Models\Task::factory(5)
-                    ->recycle($usuarios)
+                    ->recycle($todos)
                     ->create(['project_id' => $project->id])
-                    ->each(function ($task) use ($usuarios, $labels) {
+                    ->each(function ($task) use ($todos, $labels) {
                         \App\Models\Comment::factory(2)
-                            ->recycle($usuarios)
+                            ->recycle($todos)
                             ->create(['task_id' => $task->id]);
 
                         $task->labels()->attach(
@@ -41,5 +45,5 @@ class DatabaseSeeder extends Seeder
                         );
                     });
             });
-    }
+    }   
 }

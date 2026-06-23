@@ -17,4 +17,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::middleware('role:admin')->prefix('admin')->group(function () {
+    // Rutas de administración de usuarios se agregarán en la Fase 4
+});
 require __DIR__.'/auth.php';
