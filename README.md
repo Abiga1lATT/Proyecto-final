@@ -5,7 +5,7 @@ Breeze, spatie/laravel-permission y PostgreSQL.
 
 ## Autor
 
-Tu nombre aquí
+Abigail Anahi Tacuri Torres
 
 ## Stack tecnológico
 
@@ -19,8 +19,8 @@ Tu nombre aquí
 
 1. Clonar el repositorio:
 ```bash
-git clone https://github.com/tu-usuario/gestorpro.git
-cd gestorpro
+git clone https://github.com/Abiga1lATT/Proyecto-final.git
+cd jira
 ```
 
 2. Instalar dependencias:
@@ -40,8 +40,8 @@ php artisan key:generate
 DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
 DB_PORT=5432
-DB_DATABASE=gestorpro
-DB_USERNAME=gestorpro
+DB_DATABASE=gestor
+DB_USERNAME=jira
 DB_PASSWORD=123456
 ```
 
@@ -64,10 +64,10 @@ php artisan serve
 
 | Rol          | Email                      | Contraseña |
 |--------------|----------------------------|------------|
-| Admin        | admin@gestorpro.com        | password   |
-| Líder        | lider@gestorpro.com        | password   |
-| Colaborador  | colaborador@gestorpro.com  | password   |
-| Invitado     | invitado@gestorpro.com     | password   |
+| Admin        | admin@jira.com        | password   |
+| Líder        | lider@jira.com        | password   |
+| Colaborador  | colaborador@jira.com  | password   |
+| Invitado     | invitado@jira.com     | password   |
 
 ## Roles y permisos
 
