@@ -49,25 +49,25 @@ class RolePermissionSeeder extends Seeder
 
         // 3) Usuarios de prueba con cada rol
         $admin_user = User::firstOrCreate(
-            ['email' => 'admin@gestorpro.com'],
+            ['email' => 'admin@jira.com'],
             ['name' => 'Administrador', 'password' => bcrypt('password')]
         );
         $admin_user->assignRole('admin');
 
         $lider_user = User::firstOrCreate(
-            ['email' => 'lider@gestorpro.com'],
+            ['email' => 'lider@jira.com'],
             ['name' => 'Lider Proyecto', 'password' => bcrypt('password')]
         );
         $lider_user->assignRole('lider');
 
         $colaborador_user = User::firstOrCreate(
-            ['email' => 'colaborador@gestorpro.com'],
+            ['email' => 'colaborador@jira.com'],
             ['name' => 'Colaborador Uno', 'password' => bcrypt('password')]
         );
         $colaborador_user->assignRole('colaborador');
 
         $invitado_user = User::firstOrCreate(
-            ['email' => 'invitado@gestorpro.com'],
+            ['email' => 'invitado@jira.com'],
             ['name' => 'Invitado Cliente', 'password' => bcrypt('password')]
         );
         $invitado_user->assignRole('invitado');

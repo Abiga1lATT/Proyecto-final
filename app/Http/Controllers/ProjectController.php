@@ -7,26 +7,33 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
         $user = auth()->user();
 
-        $projects = $user->hasRole('admin')
-            ? Project::with('owner')->latest()->paginate(10)
-            : Project::with('owner')
-                ->where(function ($q) use ($user) {
-                    $q->where('owner_id', $user->id)
-                      ->orWhereHas('members', fn($q) => $q->where('users.id', $user->id));
-                })
-                ->latest()
-                ->paginate(10);
+        $query = $user->hasRole('admin')
+            ? Project::with('owner')
+            : Project::with('owner')->where(function ($q) use ($user) {
+                $q->where('owner_id', $user->id)
+                    ->orWhereHas('members', fn($q) => $q->where('users.id', $user->id));
+            });
+
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        if ($request->filled('buscar')) {
+            $query->where('nombre', 'ilike', '%' . $request->buscar . '%');
+        }
+
+        $projects = $query->latest()->paginate(10)->withQueryString();
 
         return view('projects.index', compact('projects'));
     }
-
     public function create(): View
     {
         $this->authorize('create', Project::class);
@@ -48,13 +55,26 @@ class ProjectController extends Controller
             ->with('success', 'Proyecto creado correctamente.');
     }
 
-    public function show(Project $project): View
+    public function show(Project $project, Request $request): View
     {
         $this->authorize('view', $project);
 
-        $project->load(['owner', 'members', 'tasks.assignee', 'tasks.labels']);
+        $project->load(['owner', 'members']);
 
-        return view('projects.show', compact('project'));
+        $tasksQuery = $project->tasks()->with(['assignee', 'labels']);
+
+        if ($request->filled('estado')) {
+            $tasksQuery->where('estado', $request->estado);
+        }
+
+        if ($request->filled('prioridad')) {
+            $tasksQuery->where('prioridad', $request->prioridad);
+        }
+
+        $tasks = $tasksQuery->latest()->paginate(10, ['*'], 'tasks_page')
+            ->withQueryString();
+
+        return view('projects.show', compact('project', 'tasks'));
     }
 
     public function edit(Project $project): View

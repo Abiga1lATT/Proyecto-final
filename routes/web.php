@@ -13,7 +13,24 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $user = auth()->user();
+
+    $totalProyectos = $user->hasRole('admin')
+        ? \App\Models\Project::count()
+        : \App\Models\Project::where(function ($q) use ($user) {
+            $q->where('owner_id', $user->id)
+              ->orWhereHas('members', fn($q) => $q->where('users.id', $user->id));
+        })->count();
+
+    $totalTareas = $user->hasRole('admin')
+        ? \App\Models\Task::count()
+        : $user->tasks()->count();
+
+    $tareasCompletadas = $user->hasRole('admin')
+        ? \App\Models\Task::where('estado', 'completada')->count()
+        : $user->tasks()->where('estado', 'completada')->count();
+
+    return view('dashboard', compact('totalProyectos', 'totalTareas', 'tareasCompletadas'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
